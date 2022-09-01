@@ -11,6 +11,20 @@ disable = [
     "fixme"
 ]
 
+[tool.flake8]
+    exclude = ".venv"
+    max-complexity = 20
+    max-line-length = 88
+    extend-ignore = """
+        W503,
+        E203,
+        E701,
+        E501,
+    """
+    per-file-ignores = """
+        __init__.py: F401
+    """
+
 [tool.black]
 line-length = 88
 target-version = ['py310']

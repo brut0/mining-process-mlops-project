@@ -18,8 +18,8 @@ loguru = "==0.6.0"
 python-dotenv = "==0.20.0"
 pylint = "==2.15.0"
 black = "==22.8.0"
-flake8 = "==5.0.4"
 isort = "==5.10.1"
+pyproject-flake8 = "==0.0.1a5"
 
 [dev-packages]
 
