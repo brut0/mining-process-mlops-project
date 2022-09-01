@@ -1,0 +1,2 @@
+DATA_YEAR = 2017
+EXPERIMENT_NAME = "my-experiment-6"
