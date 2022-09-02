@@ -11,7 +11,11 @@ repos:
           - --pattern=main
       - id: requirements-txt-fixer
       - id: trailing-whitespace
-  - repo: local
+      - id: check-yaml
+      - id: check-toml
+      - id: name-tests-test
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.15.0
     hooks:
       - id: pylint
         name: pylint

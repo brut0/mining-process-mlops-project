@@ -13,7 +13,7 @@ disable = [
 
 [tool.flake8]
     exclude = ".venv"
-    max-complexity = 20
+    max-complexity = 10
     max-line-length = 88
     extend-ignore = """
         W503,
@@ -32,6 +32,6 @@ skip-string-normalization = true
 
 
 [tool.isort]
-profile = "black" 
+profile = "black"
 multi_line_output = 3
 length_sort = true
