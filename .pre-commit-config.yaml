@@ -1,0 +1,36 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.2.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: detect-private-key
+      - id: no-commit-to-branch
+        args:
+          - --pattern=main
+      - id: requirements-txt-fixer
+      - id: trailing-whitespace
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        args:
+          [
+            "-rn", # Only display messages
+            "-sn", # Don't display the score
+            "--recursive=y"
+          ]
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        name: isort (python)
+  - repo: https://github.com/psf/black
+    rev: 22.6.0
+    hooks:
+      - id: black
+        language_version: python3.10
