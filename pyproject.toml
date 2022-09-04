@@ -1,25 +1,22 @@
 [tool.pylint.messages_control]
-
 disable = [
     "missing-function-docstring",
-    "missing-final-newline",
     "missing-class-docstring",
-    "missing-module-docstring",
     "invalid-name",
     "too-few-public-methods",
     "redefined-outer-name",
-    "fixme"
+    "fixme",
+    "logging-fstring-interpolation"
 ]
 
 [tool.flake8]
     exclude = ".venv"
-    max-complexity = 20
+    max-complexity = 10
     max-line-length = 88
     extend-ignore = """
         W503,
         E203,
         E701,
-        E501,
     """
     per-file-ignores = """
         __init__.py: F401
@@ -30,8 +27,7 @@ line-length = 88
 target-version = ['py310']
 skip-string-normalization = true
 
-
 [tool.isort]
-profile = "black" 
+profile = "black"
 multi_line_output = 3
 length_sort = true
