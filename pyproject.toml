@@ -5,7 +5,8 @@ disable = [
     "invalid-name",
     "too-few-public-methods",
     "redefined-outer-name",
-    "fixme"
+    "fixme",
+    "logging-fstring-interpolation"
 ]
 
 [tool.flake8]

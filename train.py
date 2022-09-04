@@ -21,6 +21,7 @@ from model import (
     get_train_data,
     validate_month,
     preprocess_data,
+    register_best_model,
 )
 from utils.logger import Logger
 
@@ -89,7 +90,7 @@ def init_mlflow():
 
 
 if __name__ == '__main__':
-    Logger(filename='mlops.log', level=config.LOG_LEVEL)
+    Logger(filename=config.LOGGER_FILENAME, level=config.LOG_LEVEL)
     load_dotenv(override=True)  # load environment variables from .env
 
     init_mlflow()
@@ -155,3 +156,5 @@ if __name__ == '__main__':
             else:
                 mlflow.sklearn.log_model(model, artifact_path="models_mlflow")
             mlflow.log_artifact("models/scaler.b", artifact_path="scaler")
+
+    register_best_model(mlflow=mlflow)

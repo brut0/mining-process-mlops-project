@@ -7,3 +7,5 @@ SCALER_FILE = 'scaler.b'
 DATA_YEAR = 2017
 EXPERIMENT_NAME = "my-experiment-6"
 LOG_LEVEL = 'TRACE'  # TODO describe others
+COMPARED_METRIC = 'r2'
+LOGGER_FILENAME = 'mlops.log'

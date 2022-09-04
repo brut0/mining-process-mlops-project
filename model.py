@@ -5,6 +5,9 @@ import glob
 
 import numpy as np
 import pandas as pd
+from loguru import logger
+from mlflow.entities import ViewType
+from mlflow.tracking import MlflowClient
 from sklearn.metrics import (
     r2_score,
     max_error,
@@ -14,6 +17,7 @@ from sklearn.metrics import (
 )
 
 import config
+from utils.logger import Logger
 from utils.s3client import S3Client
 
 # Do not use '% Iron Concentrate' because of highly correlated(0.8) with target
@@ -43,6 +47,8 @@ LAB_FEATURES = ['% Iron Feed', '% Silica Feed']
 AGG_FEATURES = [clm.replace(' ', '_').lower() for clm in AGG_FEATURES]
 LAB_FEATURES = [clm.replace(' ', '_').lower() for clm in LAB_FEATURES]
 TARGET = '%_silica_concentrate'
+
+Logger(filename=config.LOGGER_FILENAME, level=config.LOG_LEVEL)
 
 
 def get_list_data(source='local'):
@@ -126,3 +132,40 @@ def eval_metrics(actual, pred):
     max_er = max_error(actual, pred)
     metrics = {'rmse': rmse, 'mae': mae, 'mape': mape, 'r2': r2, 'max_error': max_er}
     return metrics
+
+
+def register_best_model(mlflow=None):
+    client = MlflowClient()
+
+    if config.COMPARED_METRIC in ('mae', 'mape', 'mse', 'rmse'):
+        metric_sorting = 'ASC'
+    elif config.COMPARED_METRIC == 'r2':
+        metric_sorting = 'DESC'
+    else:
+        raise Exception('Not known metric to sort choosing best model in MLflow')
+
+    # select the model with the lowest metric
+    experiment = client.get_experiment_by_name(config.EXPERIMENT_NAME)
+    best_run = client.search_runs(
+        experiment_ids=experiment.experiment_id,
+        run_view_type=ViewType.ACTIVE_ONLY,
+        order_by=[f"metrics.{config.COMPARED_METRIC} {metric_sorting}"],
+    )[0]
+
+    logger.info(
+        f"Best model is chosen: \
+        {best_run.data.tags['model']} id: {best_run.info.run_id} \
+        {config.COMPARED_METRIC}: {best_run.data.metrics[config.COMPARED_METRIC]} \
+        mlflow runName: {best_run.data.tags['mlflow.runName']}\
+        git commit: {best_run.data.tags['mlflow.source.git.commit']}\
+        train files: {best_run.data.params['train-data-files']} \
+        test file: {best_run.data.params['test-data-file']}"
+    )
+
+    # register the best model
+    model_uri = f"runs:/{best_run.info.run_id}/model"
+    mlflow.register_model(
+        model_uri=model_uri,
+        name="mining-silica-regressor-best",
+        tags={'model': best_run.data.params['model']},
+    )
