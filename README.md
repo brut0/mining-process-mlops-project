@@ -1,2 +1,2 @@
 # mining-process-mlops-project
-Capstone project of MLOpsa Zoomcamp
+Capstone project of MLOps Zoomcamp

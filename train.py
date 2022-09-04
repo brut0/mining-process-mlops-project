@@ -7,21 +7,22 @@ from pathlib import Path
 import mlflow
 from dotenv import load_dotenv
 from loguru import logger
-from xgboost import XGBRegressor
-from sklearn.tree import DecisionTreeRegressor
+from mlflow.tracking import MlflowClient
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import Ridge, ElasticNet, LinearRegression
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.linear_model import ElasticNet, LinearRegression, Ridge
 from sklearn.model_selection import GridSearchCV
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.tree import DecisionTreeRegressor
+from xgboost import XGBRegressor
 
 import config
 from model import (
     eval_metrics,
     get_test_data,
     get_train_data,
-    validate_month,
     preprocess_data,
     register_best_model,
+    validate_month,
 )
 from utils.logger import Logger
 
@@ -29,11 +30,7 @@ N_FOLDS = 5
 N_JOBS = 8
 SEED = 91
 
-SCORING = 'neg_mean_absolute_error'
 PREPROCCESS_TYPE = 'minmax_scaler no3rd'
-
-TRAIN_DATA_MONTH = 7
-TEST_DATA_MONTH = 8
 
 
 models = {
@@ -94,7 +91,7 @@ if __name__ == '__main__':
     load_dotenv(override=True)  # load environment variables from .env
 
     init_mlflow()
-    month = validate_month(TRAIN_DATA_MONTH)
+    month = validate_month(config.TRAIN_DATA_MONTH)
     df_train, train_filenames = get_train_data(month=month)
     logger.info(f"Train: {df_train.shape}")
     X_train, y_train = preprocess_data(df_train)
@@ -103,7 +100,7 @@ if __name__ == '__main__':
     X_train = scaler.fit_transform(X_train)
     Path(f"{config.MODEL_PATH}{config.MODEL_FILE}").write_bytes(pickle.dumps(scaler))
 
-    month = validate_month(TEST_DATA_MONTH)
+    month = validate_month(config.TEST_DATA_MONTH)
     df_test, test_filename = get_test_data(month=month)
     logger.info(f"Test: {df_test.shape}")
     X_test, y_test = preprocess_data(df_test)
@@ -123,7 +120,7 @@ if __name__ == '__main__':
                 model,
                 params,
                 cv=N_FOLDS,
-                scoring=SCORING,
+                scoring=config.SCORING,
                 return_train_score=False,
                 n_jobs=N_JOBS,
             )
@@ -132,7 +129,7 @@ if __name__ == '__main__':
             cv_score = -clf.best_score_
             test_metrics = eval_metrics(y_test, model.predict(X_test))
             logger.info(clf.best_params_)
-            logger.info(f"cross-val {SCORING}: {cv_score}")
+            logger.info(f"cross-val {config.SCORING}: {cv_score}")
             for metric, value in test_metrics.items():
                 logger.info(f"{metric}: {value}")
             Path(f"{config.MODEL_PATH}{config.MODEL_FILE}").write_bytes(
@@ -141,13 +138,13 @@ if __name__ == '__main__':
             mlflow.set_tag("model", model_name)
             mlflow.log_param("model", model_name)
             mlflow.log_param("preprocess", PREPROCCESS_TYPE)
-            mlflow.log_param('cv_scoring', SCORING)
+            mlflow.log_param('cv_scoring', config.SCORING)
             mlflow.log_params(model.get_params())
-            mlflow.log_param("train-data-month", TRAIN_DATA_MONTH)
-            mlflow.log_param("test-data-month", TEST_DATA_MONTH)
+            mlflow.log_param("train-data-month", config.TRAIN_DATA_MONTH)
+            mlflow.log_param("test-data-month", config.TEST_DATA_MONTH)
             mlflow.log_param("train-data-files", ', '.join(train_filenames))
             mlflow.log_param("test-data-file", test_filename)
-            mlflow.log_metric(f"cv_{SCORING}", cv_score)
+            mlflow.log_metric(f"cv_{config.SCORING}", cv_score)
             mlflow.log_metrics(test_metrics)
             # mlflow.log_artifact(local_path="models/model.bin",
             #  artifact_path="models_pickle")
@@ -157,4 +154,7 @@ if __name__ == '__main__':
                 mlflow.sklearn.log_model(model, artifact_path="models_mlflow")
             mlflow.log_artifact("models/scaler.b", artifact_path="scaler")
 
-    register_best_model(mlflow=mlflow)
+    mlflow_client = MlflowClient(
+        f"http://{os.environ['MLFLOW_SERVER_HOST']}:{os.environ['MLFLOW_SERVER_PORT']}"
+    )
+    register_best_model(mlflow=mlflow, mlflow_client=mlflow_client)
