@@ -6,7 +6,8 @@ disable = [
     "too-few-public-methods",
     "redefined-outer-name",
     "fixme",
-    "logging-fstring-interpolation"
+    "logging-fstring-interpolation",
+    "duplicate-code"
 ]
 
 [tool.flake8]
