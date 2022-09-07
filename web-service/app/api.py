@@ -64,7 +64,7 @@ def prepare_features(features):
 
 def predict(features):
     preds = model.predict(features)
-    logger.info(f"{preds[0]}")
+    logger.info(f"Predicted Silica concentrate(%): {preds[0]}")
     return float(preds[0])
 
 
