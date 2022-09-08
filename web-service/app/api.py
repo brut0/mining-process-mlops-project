@@ -26,16 +26,18 @@ latest_versions = client.get_latest_versions(
     name=config.MODEL_NAME, stages=["Production"]
 )
 run_id = None
-last_prod_version = 0
+model_name = None
+model_version = 0
 for version in latest_versions:
-    if int(version.version) > last_prod_version:
+    if int(version.version) > model_version:
         run_id = version.run_id
-        last_prod_version = int(version.version)
+        model_version = int(version.version)
+        model_name = version.tags
     logger.info(
         f"run_id:{version.run_id} version:{version.version} model:{version.tags}"
         f" stage:{version.current_stage} status:{version.status}"
     )
-logger.info(f"Selected model - (run_id:{run_id} version:{last_prod_version})")
+logger.info(f"Selected model - (run_id:{run_id} version:{model_version})")
 
 # Load model and scaler
 s3_client = S3Client().client
@@ -73,12 +75,20 @@ app = Flask("silica-prediction")
 
 @app.route("/predict", methods=["POST"])
 def predict_endpoint():
-    ride = request.get_json()
+    mining_data = request.get_json()
 
-    features = prepare_features(ride)
-    predictions = predict(features)
+    features = prepare_features(mining_data)
+    prediction = predict(features)
 
-    result = {"duration": predictions}
+    result = {
+        "measurements_count": 1,  # TODO calculate
+        "%_silica_concentrate": prediction,
+        "model": {
+            "name": model_name,
+            "run_id": run_id,
+            "version": model_version,
+        },
+    }
 
     return jsonify(result)
 
