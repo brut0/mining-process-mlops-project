@@ -16,28 +16,31 @@ from utils.s3client import S3Client
 Logger(filename=config.LOGGER_FILENAME, level=config.LOG_LEVEL)
 
 
-# Get production version of model
-client = MlflowClient(
-    f"http://{os.environ['MLFLOW_SERVER_HOST']}:{os.environ['MLFLOW_SERVER_PORT']}"
-)
-
-logger.info(f"Get versions of model '{config.MODEL_NAME}'")
-latest_versions = client.get_latest_versions(
-    name=config.MODEL_NAME, stages=["Production"]
-)
 run_id = None
 model_name = None
 model_version = 0
-for version in latest_versions:
-    if int(version.version) > model_version:
-        run_id = version.run_id
-        model_version = int(version.version)
-        model_name = version.tags
-    logger.info(
-        f"run_id:{version.run_id} version:{version.version} model:{version.tags}"
-        f" stage:{version.current_stage} status:{version.status}"
+if "RUN_ID" in os.environ:
+    run_id = os.environ["RUN_ID"]
+else:
+    # Get production version of model
+    client = MlflowClient(
+        f"http://{os.environ['MLFLOW_SERVER_HOST']}:{os.environ['MLFLOW_SERVER_PORT']}"
     )
-logger.info(f"Selected model - (run_id:{run_id} version:{model_version})")
+
+    logger.info(f"Get versions of model '{config.MODEL_NAME}'")
+    latest_versions = client.get_latest_versions(
+        name=config.MODEL_NAME, stages=["Production"]
+    )
+    for version in latest_versions:
+        if int(version.version) > model_version:
+            run_id = version.run_id
+            model_version = int(version.version)
+            model_name = version.tags
+        logger.info(
+            f"run_id:{version.run_id} version:{version.version} model:{version.tags}"
+            f" stage:{version.current_stage} status:{version.status}"
+        )
+logger.info(f"Selected model run_id:{run_id})")
 
 # Load model and scaler
 s3_client = S3Client().client
