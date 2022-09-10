@@ -1,0 +1,73 @@
+datasets:
+  mining:
+    column_mapping:
+      numerical_features:
+        - "%_iron_feed_last"
+        - "%_silica_feed_las"
+        - "starch_flow_mean"
+        - "starch_flow_amax"
+        - "starch_flow_amin"
+        - "amina_flow_mean"
+        - "amina_flow_amax"
+        - "amina_flow_amin"
+        - "ore_pulp_flow_mean"
+        - "ore_pulp_flow_amax"
+        - "ore_pulp_flow_amin"
+        - "ore_pulp_ph_mean"
+        - "ore_pulp_ph_amax"
+        - "ore_pulp_ph_amin"
+        - "ore_pulp_density_mean"
+        - "ore_pulp_density_amax"
+        - "ore_pulp_density_amin"
+        - "flotation_column_01_air_flow_mean"
+        - "flotation_column_01_air_flow_amax"
+        - "flotation_column_01_air_flow_amin"
+        - "flotation_column_02_air_flow_mean"
+        - "flotation_column_02_air_flow_amax"
+        - "flotation_column_02_air_flow_amin"
+        - "flotation_column_03_air_flow_mean"
+        - "flotation_column_03_air_flow_amax"
+        - "flotation_column_03_air_flow_amin"
+        - "flotation_column_04_air_flow_mean"
+        - "flotation_column_04_air_flow_amax"
+        - "flotation_column_04_air_flow_amin"
+        - "flotation_column_05_air_flow_mean"
+        - "flotation_column_05_air_flow_amax"
+        - "flotation_column_05_air_flow_amin"
+        - "flotation_column_06_air_flow_mean"
+        - "flotation_column_06_air_flow_amax"
+        - "flotation_column_06_air_flow_amin"
+        - "flotation_column_07_air_flow_mean"
+        - "flotation_column_07_air_flow_amax"
+        - "flotation_column_07_air_flow_amin"
+        - "flotation_column_01_level_mean"
+        - "flotation_column_01_level_amax"
+        - "flotation_column_01_level_amin"
+        - "flotation_column_02_level_mean"
+        - "flotation_column_02_level_amax"
+        - "flotation_column_02_level_amin"
+        - "flotation_column_03_level_mean"
+        - "flotation_column_03_level_amax"
+        - "flotation_column_03_level_amin"
+        - "flotation_column_04_level_mean"
+        - "flotation_column_04_level_amax"
+        - "flotation_column_04_level_amin"
+        - "flotation_column_05_level_mean"
+        - "flotation_column_05_level_amax"
+        - "flotation_column_05_level_amin"
+        - "flotation_column_06_level_mean"
+        - "flotation_column_06_level_amax"
+        - "flotation_column_06_level_amin"
+        - "flotation_column_07_level_mean"
+        - "flotation_column_07_level_amax"
+        - "flotation_column_07_level_amin"
+    data_format:
+      header: true
+      separator: ','
+service:
+  calculation_period_sec: 20
+  min_reference_size: 30
+  moving_reference: false
+  datasets_path: datasets
+  use_reference: true
+  window_size: 5

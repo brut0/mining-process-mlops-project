@@ -1,0 +1,8 @@
+dataclasses==0.6
+evidently
+prefect>=2.0b
+prometheus_client~=0.11.0
+pyarrow
+pymongo
+pyyaml~=5.4.1
+requests~=2.26.0
