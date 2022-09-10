@@ -4,18 +4,11 @@ import os
 import pickle
 from pathlib import Path
 
+import config
 import mlflow
 from dotenv import load_dotenv
 from loguru import logger
 from mlflow.tracking import MlflowClient
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import ElasticNet, LinearRegression, Ridge
-from sklearn.model_selection import GridSearchCV
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.tree import DecisionTreeRegressor
-from xgboost import XGBRegressor
-
-import config
 from model import (
     eval_metrics,
     get_test_data,
@@ -24,7 +17,13 @@ from model import (
     register_best_model,
     validate_month,
 )
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import ElasticNet, LinearRegression, Ridge
+from sklearn.model_selection import GridSearchCV
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.tree import DecisionTreeRegressor
 from utils.logger import Logger
+from xgboost import XGBRegressor
 
 N_FOLDS = 5
 N_JOBS = 8
@@ -95,6 +94,7 @@ if __name__ == '__main__':
     df_train, train_filenames = get_train_data(month=month)
     logger.info(f"Train: {df_train.shape}")
     X_train, y_train = preprocess_data(df_train)
+    logger.info(X_train.iloc[0])
     logger.info(f"Train after preprocess: {X_train.shape}{y_train.shape}")
     scaler = MinMaxScaler()
     X_train = scaler.fit_transform(X_train)

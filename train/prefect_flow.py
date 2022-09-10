@@ -3,17 +3,16 @@
 import os
 import pickle
 
+import config
 import mlflow
 import numpy as np
 from dotenv import load_dotenv
 from loguru import logger
 from mlflow.tracking import MlflowClient
+from model import get_test_data, preprocess_data, validate_month
 from prefect import flow, task
 from prefect.task_runners import SequentialTaskRunner
 from sklearn.model_selection import cross_val_score
-
-import config
-from model import get_test_data, preprocess_data, validate_month
 from utils.logger import Logger
 from utils.s3client import S3Client
 

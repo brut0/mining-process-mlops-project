@@ -10,7 +10,6 @@ import os
 
 import boto3
 from dotenv import load_dotenv
-
 from utils.singleton import Singleton
 
 

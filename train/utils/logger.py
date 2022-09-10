@@ -9,7 +9,6 @@ Works as singleton
 import sys
 
 from loguru import logger
-
 from utils.singleton import Singleton
 
 

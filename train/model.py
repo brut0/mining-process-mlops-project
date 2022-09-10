@@ -4,6 +4,7 @@ import glob
 import io
 import pickle
 
+import config
 import numpy as np
 import pandas as pd
 
@@ -19,8 +20,6 @@ from sklearn.metrics import (
     r2_score,
 )
 from sklearn.model_selection import cross_val_score
-
-import config
 from utils.logger import Logger
 from utils.s3client import S3Client
 
