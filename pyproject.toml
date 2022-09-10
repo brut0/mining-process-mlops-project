@@ -7,7 +7,7 @@ disable = [
     "redefined-outer-name",
     "fixme",
     "logging-fstring-interpolation",
-    "duplicate-code"
+    "duplicate-code",
 ]
 
 [tool.flake8]
