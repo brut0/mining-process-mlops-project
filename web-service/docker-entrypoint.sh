@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 ls -l
 export FLASK_APP=api.py
 export FLASK_RUN_HOST=0.0.0.0
