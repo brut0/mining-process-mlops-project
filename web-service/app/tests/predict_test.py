@@ -1,6 +1,9 @@
 """ Test 'predict' endpoint """
+# pylint: disable=unused-import
 
 import pytest
+
+from . import client
 
 
 @pytest.fixture
@@ -74,6 +77,7 @@ def mining_data():
 
 
 def test_predict_success(client, url, mining_data):
+    # mocker.patch("dao.pricing_dao.PricingDAO.update_table_with_ml_calc")
     response = client.post(url, json=mining_data)
     assert response.status_code == 200
     assert response.content_type == "application/json"

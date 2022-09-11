@@ -1,12 +1,9 @@
 """ Endpoint for prediction silica in mining data """
 
 import config
-from dotenv import load_dotenv
 from flask import Flask
 from predict import bp
 from utils.logger import Logger
-
-load_dotenv()  # take environment variables from .env
 
 Logger(filename=config.LOGGER_FILENAME, level=config.LOG_LEVEL)
 
