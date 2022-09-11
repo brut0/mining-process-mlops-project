@@ -2,6 +2,8 @@
 
 
 class Singleton(type):
+    """Singleton base class"""
+
     _instances = {}
 
     def __call__(cls, *args, **kwargs):

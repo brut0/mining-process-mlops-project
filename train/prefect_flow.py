@@ -56,9 +56,11 @@ def get_latest_not_staged_model(mlflow_client: MlflowClient = None):
             if int(version.version) > last_not_staged_version:
                 run_id = version.run_id
                 last_not_staged_version = int(version.version)
-        elif version.current_stage in ('Staging', 'Production'):
-            if int(version.version) > last_not_staged_version:
-                run_id = None
+        elif (
+            version.current_stage in ('Staging', 'Production')
+            and int(version.version) > last_not_staged_version
+        ):
+            run_id = None
         logger.info(
             f"run_id:{version.run_id} version:{version.version} model:{version.tags}"
             f" stage:{version.current_stage} status:{version.status}"

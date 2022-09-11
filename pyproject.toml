@@ -1,7 +1,6 @@
 [tool.pylint.messages_control]
 disable = [
     "missing-function-docstring",
-    "missing-class-docstring",
     "invalid-name",
     "too-few-public-methods",
     "redefined-outer-name",
@@ -17,8 +16,6 @@ disable = [
     max-line-length = 88
     extend-ignore = """
         W503,
-        E203,
-        E701,
     """
     per-file-ignores = """
         __init__.py: F401

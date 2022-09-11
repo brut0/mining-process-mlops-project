@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # pylint: disable=import-error
+# pylint: disable=missing-class-docstring
 
 """
 This is a demo service for Evidently metrics integration with Prometheus and Grafana.

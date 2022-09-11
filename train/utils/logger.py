@@ -13,6 +13,8 @@ from utils.singleton import Singleton
 
 
 class Logger(metaclass=Singleton):
+    """Singletone logger class for loguru"""
+
     created = None
 
     def __init__(self, filename='log.log', level='TRACE'):
