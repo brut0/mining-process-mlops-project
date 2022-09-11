@@ -8,6 +8,7 @@ disable = [
     "fixme",
     "logging-fstring-interpolation",
     "duplicate-code",
+    "broad-except"
 ]
 
 [tool.flake8]

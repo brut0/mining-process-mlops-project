@@ -84,29 +84,37 @@ bp = Blueprint("ml", __name__)
 
 @bp.route("/predict", methods=["POST"])
 def predict_endpoint():
-    mining_data = request.get_json()
+    status = 500
+    result = None
 
-    run_id = get_runid()
-    logger.info(f"Selected model run_id:{run_id})")
+    try:
+        mining_data = request.get_json()
 
-    s3_client = S3Client().client
-    model = get_model_s3(client=s3_client, run_id=run_id)
-    logger.info(f"Model: {model}")
+        run_id = get_runid()
+        logger.info(f"Selected model run_id:{run_id})")
 
-    scaler = get_scaler_s3(client=s3_client, run_id=run_id)
-    logger.info(f"Scaler: {scaler}")
+        s3_client = S3Client().client
+        model = get_model_s3(client=s3_client, run_id=run_id)
+        logger.info(f"Model: {model}")
 
-    features = prepare_features(scaler=scaler, features=mining_data)
-    prediction = predict(model=model, features=features)
+        scaler = get_scaler_s3(client=s3_client, run_id=run_id)
+        logger.info(f"Scaler: {scaler}")
 
-    result = {
-        "measurements_count": 1,  # TODO calculate
-        "%_silica_concentrate": prediction,
-        "model": {
-            # "name": model_name,
-            "run_id": run_id,
-            # "version": model_version,
-        },
-    }
+        features = prepare_features(scaler=scaler, features=mining_data)
+        prediction = predict(model=model, features=features)
 
-    return Response(json.dumps(result), status=200, mimetype="application/json")
+        status = 200
+        result = {
+            "measurements_count": 1,  # TODO calculate
+            config.TARGET: prediction,
+            "model": {
+                # "name": model_name,
+                "run_id": run_id,
+                # "version": model_version,
+            },
+        }
+    except Exception as e:
+        logger.info("Failed to predict")
+        logger.exception(e)
+
+    return Response(json.dumps(result), status=status, mimetype="application/json")
