@@ -1,17 +1,20 @@
-""" Endpoint for prediction silica in mining data """
+""" Prediction endpoint """
 
+import json
 import os
 import pickle
 
+import config
 import numpy as np
 import pandas as pd
-from flask import Flask, jsonify, request
+from dotenv import load_dotenv
+from flask import Blueprint, Response, request
 from loguru import logger
 from mlflow.tracking import MlflowClient
-
-import config
 from utils.logger import Logger
 from utils.s3client import S3Client
+
+load_dotenv()  # take environment variables from .env
 
 Logger(filename=config.LOGGER_FILENAME, level=config.LOG_LEVEL)
 
@@ -73,10 +76,10 @@ def predict(features):
     return float(preds[0])
 
 
-app = Flask("silica-prediction")
+bp = Blueprint("ml", __name__)
 
 
-@app.route("/predict", methods=["POST"])
+@bp.route("/predict", methods=["POST"])
 def predict_endpoint():
     mining_data = request.get_json()
 
@@ -93,8 +96,4 @@ def predict_endpoint():
         },
     }
 
-    return jsonify(result)
-
-
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=os.environ["FLASK_RUN_PORT"])
+    return Response(json.dumps(result), status=200, mimetype="application/json")
