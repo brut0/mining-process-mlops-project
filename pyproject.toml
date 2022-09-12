@@ -1,12 +1,13 @@
 [tool.pylint.messages_control]
 disable = [
     "missing-function-docstring",
-    "missing-class-docstring",
     "invalid-name",
     "too-few-public-methods",
     "redefined-outer-name",
     "fixme",
-    "logging-fstring-interpolation"
+    "logging-fstring-interpolation",
+    "duplicate-code",
+    "broad-except"
 ]
 
 [tool.flake8]
@@ -15,11 +16,10 @@ disable = [
     max-line-length = 88
     extend-ignore = """
         W503,
-        E203,
-        E701,
     """
     per-file-ignores = """
         __init__.py: F401
+        *test.py: F401, F811
     """
 
 [tool.black]
@@ -29,5 +29,5 @@ skip-string-normalization = true
 
 [tool.isort]
 profile = "black"
+line_length = 88
 multi_line_output = 3
-length_sort = true
